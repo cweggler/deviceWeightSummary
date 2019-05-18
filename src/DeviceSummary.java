@@ -27,17 +27,26 @@ import java.util.Map;
 
 public class DeviceSummary {
 
+    // This function is vital to run the code
     public static void main(String args[]) {
-        // run your function
+
+        //the url for the XML file of data
         String url = "https://main.g2planet.com/codetest/example.xml";
+
         try {
             deviceListInfoSummary(url);
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("InvalidArgumentException: "+ e);
         }
     }
 
-    public static void deviceListInfoSummary(String url) throws InvalidArgumentException, RuntimeException {
+    /**
+     * deviceListInfoSummary() prints the average, min, max, and stddev of device weights, and then a count of devices
+     * @param url The url where the XML data comes from
+     * @throws RuntimeException
+     */
+
+    public static void deviceListInfoSummary(String url) throws RuntimeException {
 
         //parse the XML into a dom
         Document dom = getXMLData(url);
@@ -77,16 +86,25 @@ public class DeviceSummary {
 
     }
 
+    /**
+     * getXMLData()
+     * @param url The url where the XML data comes from
+     * @return Document - the Document Object Model that holds all the XML data obtained from the url
+     */
+
     public static Document getXMLData(String url) {
+
         String inputLine = "";
         StringBuffer stringBuffer = new StringBuffer();
 
+        // This first pulls the XML data into a String and then from a String to a Document Object Model (DOM)
         try {
             URL urlObject = new URL(url);
             HttpURLConnection connection = (HttpURLConnection) urlObject.openConnection();
 
             int response = connection.getResponseCode();
-            //for debugging
+
+            //for debugging purposes
             System.out.println("Response Code: " + response);
 
             BufferedReader bfReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -99,7 +117,7 @@ public class DeviceSummary {
             String xmlString = stringBuffer.toString();
 
 
-
+            //convert the string to a dom
             Document dom = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(xmlString)));
 
             return dom;
@@ -112,6 +130,12 @@ public class DeviceSummary {
         }
 
     }
+
+    /**
+     * getCount()
+     * @param nodeList The devicelist information
+     * @return count The number of total devices
+     */
 
     public static int getCount(NodeList nodeList) {
         int count = 0;
@@ -126,6 +150,11 @@ public class DeviceSummary {
 
     }
 
+    /**
+     * getAverage()
+     * @param nodeList The weight attributes of the devices
+     * @return average The average weight of the devices in US ounces
+     */
     public static double getAverage(NodeList nodeList) {
 
         double total = 0;
@@ -164,9 +193,13 @@ public class DeviceSummary {
         return average;
     }
 
-    /*Standard deviation, to get it take the mean. Go through each number in the list
-      and subtract the mean from each number and then square the result.
-      Then take the mean of those squared differences. Then take the square root of that mean.
+    /**
+     * getStandardDev()
+     * To calculate standard deviation- get the average/mean of the data. Then for each number in the data list
+     * subtract the average from each number and then square the result. Then take the average of those
+     * squared differences. Then take the square root of that mean.
+     * @param nodeList The weight attributes of the devices
+     * @return stdDeviation The standard deviation of the devices' weights
      */
 
 
@@ -215,13 +248,19 @@ public class DeviceSummary {
             }
         }
 
+        // Get the average of the total squared differences
         double meanStdTotal = stdTotal / counter;
+
         double stdDeviation = Math.sqrt(meanStdTotal);
         return stdDeviation;
 
     }
 
-
+    /**
+     * getWeightMin()
+     * @param nodeList The weight attributes of the devices
+     * @return min The minimum weight of the devices' weights in US ounces
+     */
 
     public static double getWeightMin(NodeList nodeList) {
         Element firstElement = (Element) nodeList.item(0);
@@ -270,6 +309,12 @@ public class DeviceSummary {
 
         return min;
     }
+
+    /**
+     * getWeightMax()
+     * @param nodeList The weight attributes of the devices
+     * @return max The maximum weight of the devices' weights in US ounces
+     */
 
     public static double getWeightMax(NodeList nodeList) {
         Element firstElement = (Element) nodeList.item(0);
