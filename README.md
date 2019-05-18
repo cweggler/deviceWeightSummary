@@ -1,6 +1,6 @@
 # deviceWeightSummary
 # Intro
-Java application that takes data from XML and gives a detailed summary of the devices' weight statistics
+Java class that takes data from XML and gives a detailed summary of the devices' weight statistics
 as well as the total number of devices
 
 # How to run
